@@ -13,31 +13,27 @@ func NewHandler(k Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		switch msg := msg.(type) {
-		// TODO: Define your msg cases
-		// 
-		//Example:
-		// case Msg<Action>:
-		// 	return handleMsg<Action>(ctx, k, msg)
+		case MsgHelloCosmos:
+			return handleMsgHelloCosmos(ctx, k, msg)
 		default:
-			errMsg := fmt.Sprintf("unrecognized %s message type: %T", ModuleName,  msg)
+			errMsg := fmt.Sprintf("unrecognized %s message type: %T", ModuleName, msg)
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
 		}
 	}
 }
 
 // handle<Action> does x
-func handleMsg<Action>(ctx sdk.Context, k Keeper, msg Msg<Action>) (*sdk.Result, error) {
-	err := k.<Action>(ctx, msg.ValidatorAddr)
+func handleMsgHelloCosmos(ctx sdk.Context, k Keeper, msg MsgHelloCosmos) (*sdk.Result, error) {
+	_, err := k.GetGreet(ctx, msg.Sender.String())
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: Define your msg events
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr.String()),
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender.String()),
 		),
 	)
 

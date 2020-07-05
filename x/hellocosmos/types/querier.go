@@ -2,8 +2,9 @@ package types
 
 // Query endpoints supported by the hellocosmos querier
 const (
-// TODO: Describe query parameters, update <action> with your query
-// Query<Action>    = "<action>"
+	// TODO: Describe query parameters, update <action> with your query
+	// Query<Action>    = "<action>"
+	QueryListHello = "list"
 )
 
 /*

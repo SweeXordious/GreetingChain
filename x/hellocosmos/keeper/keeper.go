@@ -55,3 +55,8 @@ func (k Keeper) delete(ctx sdk.Context, key string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete([]byte(key))
 }
+
+func (k Keeper) GetHelloIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, []byte(""))
+}
