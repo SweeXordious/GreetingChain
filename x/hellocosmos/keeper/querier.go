@@ -4,7 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sweexordious/hellocosmos/x/hellocosmos"
 	types3 "github.com/sweexordious/hellocosmos/x/hellocosmos/types"
 	types2 "github.com/tendermint/tendermint/abci/types"
 )
@@ -36,7 +35,7 @@ import (
 // TODO: Add the modules query functions
 // They will be similar to the above one: queryParams()
 
-func NewQuerier(k hellocosmos.Keeper) types.Querier {
+func NewQuerier(k Keeper) types.Querier {
 	return func(ctx types.Context, path []string, req types2.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types3.QueryListHello:

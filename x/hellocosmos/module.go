@@ -3,6 +3,7 @@ package hellocosmos
 import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/sweexordious/hellocosmos/x/hellocosmos/types"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -15,7 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/sweexordious/hellocosmos/x/hellocosmos/client/cli"
 	"github.com/sweexordious/hellocosmos/x/hellocosmos/client/rest"
-	"github.com/sweexordious/hellocosmos/x/hellocosmos/keeper"
 )
 
 // Type check to ensure the interface is properly implemented

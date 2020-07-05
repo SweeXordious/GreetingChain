@@ -3,7 +3,6 @@ package hellocosmos
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sweexordious/hellocosmos/x/hellocosmos/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // InitGenesis initialize default parameters
