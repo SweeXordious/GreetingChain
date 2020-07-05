@@ -40,14 +40,14 @@ func NewQuerier(k hellocosmos.Keeper) types.Querier {
 	return func(ctx types.Context, path []string, req types2.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types3.QueryListHello:
-			return listHellos(ctx, k)
+			return ListHellos(ctx, k)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown scavenge query endpoint")
 		}
 	}
 }
 
-func listHellos(ctx types.Context, k Keeper) ([]byte, error) {
+func ListHellos(ctx types.Context, k Keeper) ([]byte, error) {
 	var helloList []string
 	iterator := k.GetHelloIterator(ctx)
 

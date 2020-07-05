@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/sweexordious/hellocosmos/x/hellocosmos"
 	"io"
 	"os"
 
@@ -33,12 +34,12 @@ var (
 	// TODO: rename your cli
 
 	// DefaultCLIHome default home directories for the application CLI
-	DefaultCLIHome = os.ExpandEnv("$HOME/.appli")
+	DefaultCLIHome = os.ExpandEnv("$HOME/.helloCLI")
 
 	// TODO: rename your daemon
 
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
-	DefaultNodeHome = os.ExpandEnv("$HOME/.appd")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.helloD")
 
 	// ModuleBasics The module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
@@ -52,7 +53,7 @@ var (
 		params.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
-		// TODO: Add your module(s) AppModuleBasic
+		hellocosmos.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -99,7 +100,7 @@ type NewApp struct {
 	distrKeeper    distr.Keeper
 	supplyKeeper   supply.Keeper
 	paramsKeeper   params.Keeper
-	// TODO: Add your module(s)
+	helloKeeper    hellocosmos.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -217,7 +218,7 @@ func NewInitApp(
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		distr.NewAppModule(app.distrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
-		// TODO: Add your module(s)
+		hellocosmos.NewAppModule(app.helloKeeper, app.bankKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
 	)
@@ -237,7 +238,7 @@ func NewInitApp(
 		auth.ModuleName,
 		bank.ModuleName,
 		slashing.ModuleName,
-		// TODO: Add your module(s)
+		hellocosmos.ModuleName,
 		supply.ModuleName,
 		genutil.ModuleName,
 	)

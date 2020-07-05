@@ -3,16 +3,16 @@ package cli
 import (
 	"bufio"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client/context"
+	types2 "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/sweexordious/hellocosmos/x/hellocosmos/types"
 )
 
@@ -27,11 +27,32 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	hellocosmosTxCmd.AddCommand(flags.PostCommands(
-	// TODO: Add tx based commands
-	// GetCmd<Action>(cdc)
+		GetCmdMsgHelloCosmos(cdc),
 	)...)
 
 	return hellocosmosTxCmd
+}
+
+func GetCmdMsgHelloCosmos(cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "createhello [msg] [to]",
+		Short: "Creates a new hello message",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+
+			var helloMsg = args[0]
+
+			msg := types.NewMsgHelloCosmos(cliCtx.GetFromAddress(), helloMsg, types2.AccAddress(args[1]))
+			err := msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []types2.Msg{msg})
+		},
+	}
 }
 
 // Example:
