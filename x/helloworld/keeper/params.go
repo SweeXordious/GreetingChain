@@ -1,12 +1,5 @@
 package keeper
 
-import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-)
-
 /*
 // TODO: Define if your module needs Parameters, if not this can be deleted
 
@@ -14,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sweexordious/./x/helloworld/types"
+	"github.com/sweexordious/helloworld/x/helloworld/types"
 )
 
 // GetParams returns the total set of helloworld parameters.

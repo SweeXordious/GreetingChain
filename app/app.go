@@ -2,8 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/sweexordious/x/helloworld"
-	"github.com/sweexordious/x/helloworld/keeper"
 	"io"
 	"os"
 
@@ -54,7 +52,7 @@ var (
 		params.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
-		helloworld.AppModuleBasic{},
+		// TODO: Add your module(s) AppModuleBasic
 	)
 
 	// module account permissions
@@ -101,7 +99,7 @@ type NewApp struct {
 	distrKeeper    distr.Keeper
 	supplyKeeper   supply.Keeper
 	paramsKeeper   params.Keeper
-	helloKeeper		helloworld.Keeper
+	// TODO: Add your module(s)
 
 	// Module Manager
 	mm *module.Manager
@@ -113,7 +111,7 @@ type NewApp struct {
 // verify app interface at compile time
 var _ simapp.App = (*NewApp)(nil)
 
-// New.App is a constructor function for .App
+// NewhelloworldApp is a constructor function for helloworldApp
 func NewInitApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp),
@@ -208,12 +206,6 @@ func NewInitApp(
 			app.slashingKeeper.Hooks()),
 	)
 
-	app.helloKeeper = keeper.NewKeeper(
-		cdc,
-		keys,
-		app.bankKeeper,
-		helloworld.MsgGetHello{Greeting: "HelloSomething" }
-		)
 	// TODO: Add your module(s) keepers
 
 	// NOTE: Any module instantiated in the module manager that is later modified

@@ -2,30 +2,28 @@ package keeper
 
 import (
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/bank"
 
+	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sweexordious/x/helloworld/types"
+	"github.com/sweexordious/helloworld/x/helloworld/types"
 )
 
 // Keeper of the helloworld store
 type Keeper struct {
-	storeKey    sdk.StoreKey
-	cdc         *codec.Codec
-	CoinKeeper  bank.Keeper
-	HelloKeeper types.MsgHello
+	storeKey   sdk.StoreKey
+	cdc        *codec.Codec
+	paramspace types.ParamSubspace
 }
 
 // NewKeeper creates a helloworld keeper
-func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, coinKeeper bank.Keeper, helloKeeper types.MsgHello) Keeper {
+func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, paramspace types.ParamSubspace) Keeper {
 	keeper := Keeper{
-		storeKey:    key,
-		cdc:         cdc,
-		CoinKeeper:  coinKeeper,
-		HelloKeeper: helloKeeper,
+		storeKey:   key,
+		cdc:        cdc,
+		paramspace: paramspace.WithKeyTable(types.ParamKeyTable()),
 	}
 	return keeper
 }
@@ -36,18 +34,18 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Get returns the pubkey from the adddress-pubkey relation
-func (k Keeper) GetHello(ctx sdk.Context, key string) (types.MsgHello, error) {
+func (k Keeper) Get(ctx sdk.Context, key string) (/* TODO: Fill out this type */, error) {
 	store := ctx.KVStore(k.storeKey)
-	var hello types.MsgHello
+	var item /* TODO: Fill out this type */
 	byteKey := []byte(key)
-	err := k.cdc.UnmarshalBinaryLengthPrefixed(store.Get(byteKey), &hello)
+	err := k.cdc.UnmarshalBinaryLengthPrefixed(store.Get(byteKey), &item)
 	if err != nil {
-		return hello, err
+		return nil, err
 	}
-	return hello, nil
+	return item, nil
 }
 
-func (k Keeper) setHello(ctx sdk.Context, key string, value types.MsgHello) {
+func (k Keeper) set(ctx sdk.Context, key string, value /* TODO: fill out this type */ ) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(value)
 	store.Set([]byte(key), bz)
@@ -56,9 +54,4 @@ func (k Keeper) setHello(ctx sdk.Context, key string, value types.MsgHello) {
 func (k Keeper) delete(ctx sdk.Context, key string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete([]byte(key))
-}
-
-func (k Keeper) GetHelloIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, nil)
 }

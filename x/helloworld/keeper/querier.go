@@ -1,35 +1,40 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"fmt"
+
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/sweexordious/helloworld/x/helloworld/types"
 )
 
-func NewQuerier(k Keeper) types.Querier {
-	return func(ctx types.Context, path []string, req abci.RequestQuery) ([]byte, error) {
+// NewQuerier creates a new querier for helloworld clients.
+func NewQuerier(k Keeper) sdk.Querier {
+	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
-		case "hellos":
-			return QueryListHello(ctx, k)
+		case types.QueryParams:
+			return queryParams(ctx, k)
+			// TODO: Put the modules query routes
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown query something")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown helloworld query endpoint")
 		}
 	}
 }
 
-func QueryListHello(ctx types.Context, k Keeper) ([]byte, error) {
-	var helloList []string
-	iterator := k.GetHelloIterator(ctx)
+func queryParams(ctx sdk.Context, k Keeper) ([]byte, error) {
+	params := k.GetParams(ctx)
 
-	for ; iterator.Valid(); iterator.Next() {
-		hello := iterator.Key()
-		helloList = append(helloList, string(hello))
-	}
-
-	res, err := codec.MarshalJSONIndent(k.cdc, helloList)
+	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params)
 	if err != nil {
-		return res, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
+
 	return res, nil
 }
+
+// TODO: Add the modules query functions
+// They will be similar to the above one: queryParams()

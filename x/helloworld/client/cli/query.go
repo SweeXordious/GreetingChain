@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sweexordious/./x/helloworld/types"
+	"github.com/sweexordious/helloworld/x/helloworld/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

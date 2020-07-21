@@ -1,4 +1,4 @@
-module github.com/sweexordious
+module github.com/sweexordious/helloworld
 
 go 1.13
 
