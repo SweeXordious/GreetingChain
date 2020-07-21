@@ -1,6 +1,9 @@
 package helloworld
 
-import "github.com/sweexordious/x/helloworld/types"
+import (
+	"github.com/sweexordious/x/helloworld/keeper"
+	"github.com/sweexordious/x/helloworld/types"
+)
 
 const (
 	ModuleName        = types.ModuleName
@@ -23,7 +26,7 @@ var (
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
 
-	NewMsgHelloCosmos = types.NewMsgHelloCosmos
+	NewMsgHello = types.NewMsgHello
 )
 
 type (
@@ -31,5 +34,5 @@ type (
 	GenesisState = types.GenesisState
 	Params       = types.Params
 
-	MsgHelloCosmos = types.MsgHelloCosmos
+	MsgGetHello = types.MsgHello
 )

@@ -2,6 +2,8 @@ package helloworld
 
 import (
 	"encoding/json"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/sweexordious/x/helloworld/types"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -12,9 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sweexordious/./x/helloworld/client/cli"
-	"github.com/sweexordious/./x/helloworld/client/rest"
-	"github.com/sweexordious/./x/helloworld/keeper"
+	"github.com/sweexordious/x/helloworld/client/cli"
+	"github.com/sweexordious/x/helloworld/client/rest"
+	"github.com/sweexordious/x/helloworld/keeper"
 )
 
 // Type check to ensure the interface is properly implemented
@@ -74,17 +76,17 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 // AppModule implements an application module for the helloworld module.
 type AppModule struct {
 	AppModuleBasic
-
-	keeper keeper.Keeper
+	coinKeeper bank.Keeper
+	keeper     Keeper
 	// TODO: Add keepers that your application depends on
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(k keeper.Keeper /*TODO: Add Keepers that your application depends on*/) AppModule {
+func NewAppModule(k keeper.Keeper, bankKeeper bank.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		keeper:         k,
-		// TODO: Add keepers that your application depends on
+		coinKeeper:     bankKeeper,
 	}
 }
 
@@ -113,7 +115,7 @@ func (AppModule) QuerierRoute() string {
 
 // NewQuerierHandler returns the helloworld module sdk.Querier.
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return types.NewQuerier(am.keeper)
+	return NewQuerier(am.keeper)
 }
 
 // InitGenesis performs genesis initialization for the helloworld module. It returns

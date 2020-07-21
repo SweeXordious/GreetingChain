@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sweexordious/./x/helloworld/types"
+	"github.com/sweexordious/x/helloworld/types"
 )
 
 // Keeper of the helloworld store
