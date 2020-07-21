@@ -24,7 +24,7 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/sweexordious/hellocosmos/app"
+	"github.com/sweexordious/./app"
 )
 
 func main() {
@@ -46,8 +46,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "helloCLI",
-		Short: "Command line interface for interacting with HelloCosmosChain",
+		Use:   "appcli",
+		Short: "Command line interface for interacting with appd",
 	}
 
 	// Add --chain-id to persistent flags and mark it required

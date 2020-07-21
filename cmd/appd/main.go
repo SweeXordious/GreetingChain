@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/sweexordious/hellocosmos/app"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -13,6 +12,8 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/sweexordious/./app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/debug"
@@ -41,8 +42,8 @@ func main() {
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
-		Use:               "helloD",
-		Short:             "HelloCosmosChain Daemon (server)",
+		Use:               "appd",
+		Short:             "app Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
