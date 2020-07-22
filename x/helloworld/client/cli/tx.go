@@ -37,7 +37,7 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "setHello [helloMsg] [sender]",
 		Short: "Creates a new hello message",
-		Args:  cobra.ExactArgs(3), // Does your request require arguments
+		Args:  cobra.ExactArgs(2), // Does your request require arguments
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
@@ -47,7 +47,7 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 			helloMsg := args[0]
 			sender := args[1]
 
-			msg := types.NewMsgSet(sdk.ValAddress{1, 2}, sdk.AccAddress(sender), helloMsg)
+			msg := types.NewMsgSet(sdk.AccAddress(sender), helloMsg)
 			err := msg.ValidateBasic()
 			if err != nil {
 				return err

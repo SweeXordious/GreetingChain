@@ -18,11 +18,10 @@ type MsgSet struct {
 }
 
 // NewMsgSet creates a new MsgSet instance
-func NewMsgSet(validatorAddr sdk.ValAddress, sender sdk.AccAddress, hello string) MsgSet {
+func NewMsgSet(sender sdk.AccAddress, hello string) MsgSet {
 	return MsgSet{
-		ValidatorAddr: validatorAddr,
-		Sender:        sender,
-		Hello:         hello,
+		Sender: sender,
+		Hello:  hello,
 	}
 }
 

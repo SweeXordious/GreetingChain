@@ -55,7 +55,7 @@ func handleMsgGet(ctx sdk.Context, k Keeper, msg MsgGet) (*sdk.Result, error) {
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr.String()),
-			sdk.NewAttribute("Msg: ", message),
+			sdk.NewAttribute("Msg: ", message.Msg),
 		),
 	)
 

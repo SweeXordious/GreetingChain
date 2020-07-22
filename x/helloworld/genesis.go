@@ -3,7 +3,7 @@ package helloworld
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sweexordious/helloworld/x/helloworld/types"
-	abci "github.com/tendermint/tendermint/abci/types"
+	_ "github.com/tendermint/tendermint/abci/types"
 )
 
 // InitGenesis initialize default parameters
