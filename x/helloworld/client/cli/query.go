@@ -2,16 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/sweexordious/helloworld/x/helloworld/types"
 )
 
@@ -28,11 +24,54 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 	helloworldQueryCmd.AddCommand(
 		flags.GetCommands(
-		// TODO: Add query Cmds
+			GetCmdListHello(queryRoute, cdc),
+			GetCmdGetHello(queryRoute, cdc),
 		)...,
 	)
 
 	return helloworldQueryCmd
 }
 
-// TODO: Add Query Commands
+func GetCmdListHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "list",
+		// Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/list", queryRoute), nil)
+			if err != nil {
+				fmt.Printf("could not get hellos\n%s\n", err.Error())
+				return nil
+			}
+
+			var out []string
+			cdc.MustUnmarshalJSON(res, &out)
+			return cliCtx.PrintOutput(out)
+		},
+	}
+}
+
+func GetCmdGetHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "get [helloMsg]",
+		Short: "Query a hello",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			solutionHash := args[0]
+
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/%s/%s", queryRoute, "get", solutionHash), nil)
+			if err != nil {
+				fmt.Printf("could not resolve scavenge %s \n%s\n", solutionHash, err.Error())
+
+				return nil
+			}
+
+			var out types.Hello
+			cdc.MustUnmarshalJSON(res, &out)
+			return cliCtx.PrintOutput(out)
+		},
+	}
+}

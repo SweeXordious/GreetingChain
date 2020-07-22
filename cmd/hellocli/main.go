@@ -46,8 +46,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "appcli",
-		Short: "Command line interface for interacting with appd",
+		Use:   "hellocli",
+		Short: "Command line interface for interacting with hellod",
 	}
 
 	// Add --chain-id to persistent flags and mark it required

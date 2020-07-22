@@ -2,6 +2,7 @@ package helloworld
 
 import (
 	"encoding/json"
+	"github.com/sweexordious/helloworld/x/helloworld/types"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -74,15 +75,13 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper keeper.Keeper
-	// TODO: Add keepers that your application depends on
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(k keeper.Keeper /*TODO: Add Keepers that your application depends on*/) AppModule {
+func NewAppModule(k keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		keeper:         k,
-		// TODO: Add keepers that your application depends on
 	}
 }
 
@@ -111,7 +110,7 @@ func (AppModule) QuerierRoute() string {
 
 // NewQuerierHandler returns the helloworld module sdk.Querier.
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return types.NewQuerier(am.keeper)
+	return keeper.NewQuerier(am.keeper)
 }
 
 // InitGenesis performs genesis initialization for the helloworld module. It returns
