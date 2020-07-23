@@ -2,13 +2,15 @@
 
 rm -r ~/.hellocli
 rm -r ~/.hellod
+rm -r ~/.appli
 
 hellod init helloNode --chain-id helloworld
 
 hellocli config keyring-backend test
 
-hellocli keys add me
-hellocli keys add you
+hellocli keys add me --keyring-backend test
+hellocli keys add you --keyring-backend test
+
 
 hellod add-genesis-account $(hellocli keys show me -a) 1000foo,10000000000000stake
 hellod add-genesis-account $(hellocli keys show you -a) 1000foo,10000000000000stake
