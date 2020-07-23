@@ -55,8 +55,7 @@ You will receive the transaction hash in the response. To get more details:
 
 Also, the logs of the other terminal should state that a valid transaction was validated in a block etc.
 ##### List existing greetings
-To send a transaction:
+To list the available greetings: 
 ```ssh
     $ hellocli query helloworld list
 ```
-The `me` account is already created in the `init.sh` script along with a `you` account. 
