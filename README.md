@@ -1,6 +1,6 @@
 # HelloWorld Chain
 
-It is an Application specific blockchain, built using the `Cosmos SDK` on top of `Tindermint`, that handles `greeting` messages, written in `Go`.
+It is an Application specific blockchain, built using the `Cosmos SDK` on top of `Tindermint` in `Go`, that handles `greeting` messages.
 
 ### Features
 
