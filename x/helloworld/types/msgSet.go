@@ -12,16 +12,17 @@ var _ sdk.Msg = &MsgSet{}
 
 // MsgSet - struct for unjailing jailed validator
 type MsgSet struct {
-	ValidatorAddr sdk.ValAddress `json:"address" yaml:"address"` // address of the validator operator
+	ValidatorAddr sdk.AccAddress `json:"address" yaml:"address"` // address of the validator operator
 	Sender        sdk.AccAddress `json:"sender" yaml:"sender"`
 	Hello         string         `json:"hello" yaml:"hello"`
 }
 
 // NewMsgSet creates a new MsgSet instance
-func NewMsgSet(sender sdk.AccAddress, hello string) MsgSet {
+func NewMsgSet(validatorAddr sdk.AccAddress, sender sdk.AccAddress, hello string) MsgSet {
 	return MsgSet{
-		Sender: sender,
-		Hello:  hello,
+		ValidatorAddr: validatorAddr,
+		Sender:        sender,
+		Hello:         hello,
 	}
 }
 

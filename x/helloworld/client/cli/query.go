@@ -46,7 +46,7 @@ func GetCmdListHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
 				return nil
 			}
 
-			var out []string
+			var out map[string]string
 			cdc.MustUnmarshalJSON(res, &out)
 			return cliCtx.PrintOutput(out)
 		},

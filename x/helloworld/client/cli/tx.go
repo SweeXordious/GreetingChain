@@ -47,7 +47,7 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 			helloMsg := args[0]
 			sender := args[1]
 
-			msg := types.NewMsgSet(sdk.AccAddress(sender), helloMsg)
+			msg := types.NewMsgSet(cliCtx.GetFromAddress(), sdk.AccAddress(sender), helloMsg)
 			err := msg.ValidateBasic()
 			if err != nil {
 				return err
