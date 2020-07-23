@@ -8,7 +8,7 @@ It is an Application specific blockchain, built using the `Cosmos SDK` on top of
 - List the available greetings.
 - Get the sender of a specific greeting.
 
-### How to use
+# How to use
 
 ## Build
 
