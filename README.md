@@ -2,6 +2,7 @@
 
 It is an Application specific blockchain, built using the `Cosmos SDK` on top of `Tindermint` in `Go`, that handles `greeting` messages.
 
+This project is inspired from the [Scavenge](https://tutorials.cosmos.network/scavenge) tutorial.
 ### Features
 
 - Add your personal greeting message with your name on the ledger. Nobody can have the same greeting as you :D
