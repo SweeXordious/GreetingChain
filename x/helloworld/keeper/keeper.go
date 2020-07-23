@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -42,10 +43,14 @@ func (k Keeper) GetMsg(ctx sdk.Context, helloMsg string) (types.Hello, error) {
 	return hello, nil
 }
 
-func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) {
+func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(helloStruct)
-	store.Set([]byte(helloStruct.Msg), bz)
+	//bz := k.cdc.MustMarshalBinaryLengthPrefixed(helloStruct)
+	if store.Get([]byte(helloStruct.Msg)) != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "the greeting you are trying to add already exists")
+	}
+	store.Set([]byte(helloStruct.Msg), helloStruct.Sender)
+	return nil
 }
 
 func (k Keeper) delete(ctx sdk.Context, helloMsg string) {

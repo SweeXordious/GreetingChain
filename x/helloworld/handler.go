@@ -26,10 +26,14 @@ func NewHandler(k Keeper) sdk.Handler {
 
 // handle<Action> does x
 func handleMsgSet(ctx sdk.Context, k Keeper, msg MsgSet) (*sdk.Result, error) {
-	k.SetMsg(ctx, types.Hello{
+	err := k.SetMsg(ctx, types.Hello{
 		Sender: msg.Sender,
 		Msg:    msg.Hello,
 	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
