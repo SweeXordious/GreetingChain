@@ -1,12 +1,11 @@
 package keeper
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/sweexordious/helloworld/x/helloworld/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // NewQuerier creates a new querier for helloworld clients.
@@ -42,7 +41,9 @@ func listHellos(ctx sdk.Context, k Keeper) ([]byte, error) {
 	iterator := k.GetHelloIterator(ctx)
 
 	for ; iterator.Valid(); iterator.Next() {
-		hellosList[string(iterator.Key())] = string(iterator.Value())
+		var msg types.Hello
+		codec.Cdc.MustUnmarshalBinaryBare(iterator.Value(), &msg)
+		hellosList[string(iterator.Key())] = msg.String()
 	}
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, hellosList)
 	if err != nil {

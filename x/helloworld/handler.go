@@ -29,6 +29,7 @@ func handleMsgSet(ctx sdk.Context, k Keeper, msg MsgSet) (*sdk.Result, error) {
 	err := k.SetMsg(ctx, types.Hello{
 		Sender: msg.Sender,
 		Msg:    msg.Hello,
+		Price:  BaseGreetingPrice,
 	})
 
 	if err != nil {

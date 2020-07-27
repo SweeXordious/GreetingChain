@@ -45,11 +45,11 @@ func (k Keeper) GetMsg(ctx sdk.Context, helloMsg string) (types.Hello, error) {
 
 func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
-	//bz := k.cdc.MustMarshalBinaryLengthPrefixed(helloStruct)
+	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
 	if store.Get([]byte(helloStruct.Msg)) != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "the greeting you are trying to add already exists")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "The greeting you are trying to add already exists. Try buying it if it is in sale.")
 	}
-	store.Set([]byte(helloStruct.Msg), helloStruct.Sender)
+	store.Set([]byte(helloStruct.Msg), byteVal)
 	return nil
 }
 
@@ -60,5 +60,5 @@ func (k Keeper) delete(ctx sdk.Context, helloMsg string) {
 
 func (k Keeper) GetHelloIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, []byte(""))
+	return sdk.KVStorePrefixIterator(store, nil)
 }
