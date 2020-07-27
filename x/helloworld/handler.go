@@ -2,7 +2,6 @@ package helloworld
 
 import (
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/sweexordious/helloworld/x/helloworld/types"
@@ -29,7 +28,7 @@ func handleMsgSet(ctx sdk.Context, k Keeper, msg MsgSet) (*sdk.Result, error) {
 	err := k.SetMsg(ctx, types.Hello{
 		Sender: msg.Sender,
 		Msg:    msg.Hello,
-		Price:  BaseGreetingPrice,
+		Price:  msg.Price,
 	})
 
 	if err != nil {

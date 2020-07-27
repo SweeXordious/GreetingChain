@@ -15,7 +15,7 @@ type MsgSet struct {
 	ValidatorAddr sdk.AccAddress `json:"address" yaml:"address"` // address of the validator operator
 	Sender        sdk.AccAddress `json:"sender" yaml:"sender"`
 	Hello         string         `json:"hello" yaml:"hello"`
-	Price         int64          `json:"price" yaml:"price"`
+	Price         sdk.Coins      `json:"price" yaml:"price"`
 }
 
 // NewMsgSet creates a new MsgSet instance
@@ -24,7 +24,7 @@ func NewMsgSet(validatorAddr sdk.AccAddress, sender sdk.AccAddress, hello string
 		ValidatorAddr: validatorAddr,
 		Sender:        sender,
 		Hello:         hello,
-		Price:         10000,
+		Price:         BaseGreetingCoin,
 	}
 }
 
