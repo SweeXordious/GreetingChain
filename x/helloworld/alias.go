@@ -37,4 +37,5 @@ type (
 
 	MsgGet = types.MsgGet
 	MsgSet = types.MsgSet
+	MsgBuy = types.MsgBuy
 )

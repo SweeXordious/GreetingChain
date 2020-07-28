@@ -53,6 +53,21 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	return nil
 }
 
+func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
+	store := ctx.KVStore(k.storeKey)
+	currentMsgPrice :=
+	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
+	if store.Get([]byte(helloStruct.Msg)) != nil {
+		ctx.Logger().With("The greeting you are trying to add already exists. Try buying it if it is in sale.")
+		err := k.SetMsg(ctx, helloStruct)
+		if err != nil {
+			panic(err)
+		}
+	}
+	store.Set([]byte(helloStruct.Msg), byteVal)
+	return nil
+}
+
 func (k Keeper) delete(ctx sdk.Context, helloMsg string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete([]byte(helloMsg))
