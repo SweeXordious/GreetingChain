@@ -61,7 +61,7 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 
 func GetCmdBuyHello(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "setHello [helloMsg] [price]",
+		Use:   "buyHello [helloMsg] [price]",
 		Short: "Buys a hello message",
 		Args:  cobra.ExactArgs(2), // Does your request require arguments
 		RunE: func(cmd *cobra.Command, args []string) error {

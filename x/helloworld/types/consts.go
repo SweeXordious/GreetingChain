@@ -3,7 +3,7 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	GreetingCoinDenom = "msgCoin"
+	GreetingCoinDenom = "msgcoin"
 	BaseGreetingPrice = 100
 )
 

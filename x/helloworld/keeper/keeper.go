@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -13,8 +13,9 @@ import (
 
 // Keeper of the helloworld store
 type Keeper struct {
-	storeKey sdk.StoreKey
-	cdc      *codec.Codec
+	CoinKeeper bank.Keeper
+	storeKey   sdk.StoreKey
+	cdc        *codec.Codec
 }
 
 // NewKeeper creates a helloworld keeper
@@ -55,15 +56,20 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 
 func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
-	currentMsgPrice :=
-	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
-	if store.Get([]byte(helloStruct.Msg)) != nil {
-		ctx.Logger().With("The greeting you are trying to add already exists. Try buying it if it is in sale.")
-		err := k.SetMsg(ctx, helloStruct)
-		if err != nil {
-			panic(err)
-		}
+	existentMsgBytes := store.Get([]byte(helloStruct.Msg))
+	if existentMsgBytes == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "The greeting you are trying to buy does not exist. Try creating it.")
 	}
+	var existentMsg types.Hello
+	codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
+	if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
+		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
+	}
+	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, existentMsg.Sender, types.BaseGreetingCoin)
+	if sdkError != nil {
+		return sdkError
+	}
+	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
 	store.Set([]byte(helloStruct.Msg), byteVal)
 	return nil
 }

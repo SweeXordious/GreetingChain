@@ -12,8 +12,8 @@ hellocli keys add me --keyring-backend test
 hellocli keys add you --keyring-backend test
 
 
-hellod add-genesis-account $(hellocli keys show me -a) 1000foo,10000000000000stake
-hellod add-genesis-account $(hellocli keys show you -a) 1000foo,10000000000000stake
+hellod add-genesis-account $(hellocli keys show me -a) 10000000000msgcoin,10000000000000stake
+hellod add-genesis-account $(hellocli keys show you -a) 1000msgcoin,10000000000000stake
 
 hellocli config chain-id helloworld
 hellocli config output json
