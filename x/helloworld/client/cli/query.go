@@ -60,11 +60,11 @@ func GetCmdGetHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
-			solutionHash := args[0]
+			msg := args[0]
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/%s/%s", queryRoute, "get", solutionHash), nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/%s/%s", queryRoute, "get", msg), nil)
 			if err != nil {
-				fmt.Printf("could not resolve scavenge %s \n%s\n", solutionHash, err.Error())
+				fmt.Printf("could not resolve hello: %s \n%s\n", msg, err.Error())
 
 				return nil
 			}

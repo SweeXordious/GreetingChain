@@ -6,16 +6,18 @@ import (
 )
 
 type Hello struct {
-	Sender sdk.AccAddress `json:"sender" yaml:"sender"` // address of the hello sender
-	Msg    string         `json:"msg" yaml:"msg"`
-	Price  sdk.Coins      `json:"price" yaml:"price"`
+	Owner sdk.AccAddress `json:"owner" yaml:"owner"` // address of the hello sender
+	Msg   string         `json:"msg" yaml:"msg"`
+	Price sdk.Coins      `json:"price" yaml:"price"`
+	Sale  bool           `json:"forSale" yaml:"forSale"`
 }
 
 // implement fmt.Stringer
 func (h Hello) String() string {
-	return fmt.Sprintf(`Sender: %s    Msg: %s    Price: %s`,
-		h.Sender,
+	return fmt.Sprintf(`Owner: %s    Msg: %s    Price: %s     For sale: %s`,
+		h.Owner,
 		h.Msg,
 		h.Price,
+		h.Sale,
 	)
 }

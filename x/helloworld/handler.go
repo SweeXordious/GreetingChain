@@ -28,9 +28,10 @@ func NewHandler(k Keeper) sdk.Handler {
 // handle<Action> does x
 func handleMsgSet(ctx sdk.Context, k Keeper, msg MsgSet) (*sdk.Result, error) {
 	err := k.SetMsg(ctx, types.Hello{
-		Sender: msg.Sender,
-		Msg:    msg.Hello,
-		Price:  msg.Price,
+		Owner: msg.Sender,
+		Msg:   msg.Hello,
+		Price: msg.Price,
+		Sale:  false,
 	})
 
 	if err != nil {
@@ -70,9 +71,10 @@ func handleMsgGet(ctx sdk.Context, k Keeper, msg MsgGet) (*sdk.Result, error) {
 
 func handleMsgBuy(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error) {
 	err := k.BuyMsg(ctx, types.Hello{
-		Sender: msg.ValidatorAddr,
-		Msg:    msg.Hello,
-		Price:  msg.Price,
+		Owner: msg.ValidatorAddr,
+		Msg:   msg.Hello,
+		Price: msg.Price,
+		Sale:  false,
 	})
 	if err != nil {
 		fmt.Printf("could not buy hello in handleMsgGet\n%s\n", err.Error())

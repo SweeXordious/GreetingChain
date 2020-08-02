@@ -38,7 +38,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) GetMsg(ctx sdk.Context, helloMsg string) (types.Hello, error) {
 	store := ctx.KVStore(k.storeKey)
 	var hello types.Hello
-	byteKey := []byte(helloMsg)
+	byteKey := []byte(types.GreetingPrefix + helloMsg)
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(store.Get(byteKey), &hello)
 	if err != nil {
 		return hello, err
@@ -48,13 +48,14 @@ func (k Keeper) GetMsg(ctx sdk.Context, helloMsg string) (types.Hello, error) {
 
 func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
+	byteKey := []byte(types.GreetingPrefix + helloStruct.Msg)
 	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
-	if store.Get([]byte(helloStruct.Msg)) != nil {
+	if store.Get(byteKey) != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "The greeting you are trying to add already exists. Try buying it if it is in sale.")
 	}
-	store.Set([]byte(helloStruct.Msg), byteVal)
+	store.Set(byteKey, byteVal)
 	moduleAcct := sdk.AccAddress(crypto.AddressHash([]byte(types.ModuleName)))
-	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, moduleAcct, helloStruct.Price)
+	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, moduleAcct, helloStruct.Price)
 	if sdkError != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Random when sending money to the module.")
 	}
@@ -63,7 +64,8 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 
 func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
-	existentMsgBytes := store.Get([]byte(helloStruct.Msg))
+	byteKey := []byte(types.GreetingPrefix + helloStruct.Msg)
+	existentMsgBytes := store.Get(byteKey)
 	if existentMsgBytes == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "The greeting you are trying to buy does not exist. Try creating it.")
 	}
@@ -72,14 +74,14 @@ func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
 	}
-	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, existentMsg.Sender, helloStruct.Price)
+	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, existentMsg.Owner, helloStruct.Price)
 	if sdkError != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
 	}
 	//helloStruct.Msg = helloStruct.Msg + "hi"
 	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
-	store.Delete([]byte(helloStruct.Msg))
-	store.Set([]byte(helloStruct.Msg), byteVal)
+	//store.Delete(byteKey)
+	store.Set(byteKey, byteVal)
 	return nil
 }
 
