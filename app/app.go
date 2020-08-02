@@ -208,6 +208,7 @@ func NewInitApp(
 	)
 
 	app.helloWorldKeeper = helloworld.NewKeeper(
+		app.bankKeeper,
 		cdc,
 		keys[helloworld.StoreKey],
 	)

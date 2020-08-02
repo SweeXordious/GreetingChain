@@ -8,6 +8,7 @@ import (
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgGet{}, "hello/GetMessage", nil)
 	cdc.RegisterConcrete(MsgSet{}, "hello/SetMessage", nil)
+	cdc.RegisterConcrete(MsgBuy{}, "hello/BuyMessage", nil)
 }
 
 // ModuleCdc defines the module codec

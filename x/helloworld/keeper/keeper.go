@@ -4,6 +4,7 @@ import (
 	"fmt"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -19,10 +20,11 @@ type Keeper struct {
 }
 
 // NewKeeper creates a helloworld keeper
-func NewKeeper(cdc *codec.Codec, key sdk.StoreKey) Keeper {
+func NewKeeper(coinKeeper bank.Keeper, cdc *codec.Codec, key sdk.StoreKey) Keeper {
 	keeper := Keeper{
-		storeKey: key,
-		cdc:      cdc,
+		CoinKeeper: coinKeeper,
+		storeKey:   key,
+		cdc:        cdc,
 	}
 	return keeper
 }
@@ -51,6 +53,11 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "The greeting you are trying to add already exists. Try buying it if it is in sale.")
 	}
 	store.Set([]byte(helloStruct.Msg), byteVal)
+	moduleAcct := sdk.AccAddress(crypto.AddressHash([]byte(types.ModuleName)))
+	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, moduleAcct, helloStruct.Price)
+	if sdkError != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Random when sending money to the module.")
+	}
 	return nil
 }
 
@@ -65,11 +72,13 @@ func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
 	}
-	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, existentMsg.Sender, types.BaseGreetingCoin)
+	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Sender, existentMsg.Sender, helloStruct.Price)
 	if sdkError != nil {
-		return sdkError
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
 	}
+	//helloStruct.Msg = helloStruct.Msg + "hi"
 	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
+	store.Delete([]byte(helloStruct.Msg))
 	store.Set([]byte(helloStruct.Msg), byteVal)
 	return nil
 }

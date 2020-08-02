@@ -12,19 +12,17 @@ var _ sdk.Msg = &MsgSet{}
 
 // MsgSet - struct for unjailing jailed validator
 type MsgSet struct {
-	ValidatorAddr sdk.AccAddress `json:"address" yaml:"address"` // address of the validator operator
-	Sender        sdk.AccAddress `json:"sender" yaml:"sender"`
-	Hello         string         `json:"hello" yaml:"hello"`
-	Price         sdk.Coins      `json:"price" yaml:"price"`
+	Sender sdk.AccAddress `json:"sender" yaml:"sender"` // address of the validator operator
+	Hello  string         `json:"hello" yaml:"hello"`
+	Price  sdk.Coins      `json:"price" yaml:"price"`
 }
 
 // NewMsgSet creates a new MsgSet instance
-func NewMsgSet(validatorAddr sdk.AccAddress, sender sdk.AccAddress, hello string) MsgSet {
+func NewMsgSet(sender sdk.AccAddress, hello string) MsgSet {
 	return MsgSet{
-		ValidatorAddr: validatorAddr,
-		Sender:        sender,
-		Hello:         hello,
-		Price:         BaseGreetingCoin,
+		Sender: sender,
+		Hello:  hello,
+		Price:  BaseGreetingCoin,
 	}
 }
 
@@ -34,7 +32,7 @@ const SetConst = "Set"
 func (msg MsgSet) Route() string { return RouterKey }
 func (msg MsgSet) Type() string  { return SetConst }
 func (msg MsgSet) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(msg.ValidatorAddr)}
+	return []sdk.AccAddress{sdk.AccAddress(msg.Sender)}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on

@@ -36,9 +36,9 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "setHello [helloMsg] [sender]",
+		Use:   "setHello [helloMsg]",
 		Short: "Creates a new hello message",
-		Args:  cobra.ExactArgs(2), // Does your request require arguments
+		Args:  cobra.ExactArgs(1), // Does your request require arguments
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
@@ -46,9 +46,8 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 
 			helloMsg := args[0]
-			sender := args[1]
 
-			msg := types.NewMsgSet(cliCtx.GetFromAddress(), sdk.AccAddress(sender), helloMsg)
+			msg := types.NewMsgSet(cliCtx.GetFromAddress(), helloMsg)
 			err := msg.ValidateBasic()
 			if err != nil {
 				return err
