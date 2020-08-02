@@ -24,7 +24,7 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 	helloworldQueryCmd.AddCommand(
 		flags.GetCommands(
-			GetCmdListHello(queryRoute, cdc),
+			GetCmdListAllHello(queryRoute, cdc),
 			GetCmdGetHello(queryRoute, cdc),
 		)...,
 	)
@@ -32,7 +32,7 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return helloworldQueryCmd
 }
 
-func GetCmdListHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
+func GetCmdListAllHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -40,7 +40,7 @@ func GetCmdListHello(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/list", queryRoute), nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/listall", queryRoute), nil)
 			if err != nil {
 				fmt.Printf("could not get hellos\n%s\n", err.Error())
 				return nil

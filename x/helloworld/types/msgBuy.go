@@ -8,18 +8,18 @@ import (
 // Done: Describe your actions, these will implment the interface of `sdk.Msg`
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgBuy{}
+var _ sdk.Msg = &MsgPropose{}
 
-// MsgBuy - struct for unjailing jailed validator
-type MsgBuy struct {
+// MsgPropose - struct for unjailing jailed validator
+type MsgPropose struct {
 	ValidatorAddr sdk.AccAddress `json:"address" yaml:"address"` // address of the validator operator
 	Hello         string         `json:"hello" yaml:"hello"`
 	Price         sdk.Coins      `json:"price" yaml:"price"`
 }
 
-// NewMsgBuy creates a new MsgBuy instance
-func NewMsgBuy(validatorAddr sdk.AccAddress, hello string, price sdk.Coins) MsgBuy {
-	return MsgBuy{
+// NewMsgPropose creates a new MsgPropose instance
+func NewMsgPropose(validatorAddr sdk.AccAddress, hello string, price sdk.Coins) MsgPropose {
+	return MsgPropose{
 		ValidatorAddr: validatorAddr,
 		Hello:         hello,
 		Price:         price,
@@ -29,20 +29,20 @@ func NewMsgBuy(validatorAddr sdk.AccAddress, hello string, price sdk.Coins) MsgB
 const BuyConst = "Buy"
 
 // nolint
-func (msg MsgBuy) Route() string { return RouterKey }
-func (msg MsgBuy) Type() string  { return BuyConst }
-func (msg MsgBuy) GetSigners() []sdk.AccAddress {
+func (msg MsgPropose) Route() string { return RouterKey }
+func (msg MsgPropose) Type() string  { return BuyConst }
+func (msg MsgPropose) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.AccAddress(msg.ValidatorAddr)}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgBuy) GetSignBytes() []byte {
+func (msg MsgPropose) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgBuy) ValidateBasic() error {
+func (msg MsgPropose) ValidateBasic() error {
 	if msg.Price.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing sender address")
 	}

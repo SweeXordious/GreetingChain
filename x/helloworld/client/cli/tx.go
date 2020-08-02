@@ -28,7 +28,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 	helloworldTxCmd.AddCommand(flags.PostCommands(
 		GetCmdSetHello(cdc),
-		GetCmdBuyHello(cdc),
+		GetCmdProposePrice(cdc),
 	)...)
 
 	return helloworldTxCmd
@@ -58,10 +58,10 @@ func GetCmdSetHello(cdc *codec.Codec) *cobra.Command {
 	}
 }
 
-func GetCmdBuyHello(cdc *codec.Codec) *cobra.Command {
+func GetCmdProposePrice(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "buyHello [helloMsg] [price]",
-		Short: "Buys a hello message",
+		Use:   "proposePrice [helloMsg] [price]",
+		Short: "Proposes a price for a hello message",
 		Args:  cobra.ExactArgs(2), // Does your request require arguments
 		RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -75,7 +75,7 @@ func GetCmdBuyHello(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgBuy(cliCtx.GetFromAddress(), helloMsg, price)
+			msg := types.NewMsgPropose(cliCtx.GetFromAddress(), helloMsg, price)
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -85,27 +85,3 @@ func GetCmdBuyHello(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 }
-
-// Example:
-//
-// GetCmd<Action> is the CLI command for doing <Action>
-// func GetCmd<Action>(cdc *codec.Codec) *cobra.Command {
-// 	return &cobra.Command{
-// 		Use:   "/* Describe your action cmd */",
-// 		Short: "/* Provide a short description on the cmd */",
-// 		Args:  cobra.ExactArgs(2), // Does your request require arguments
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			cliCtx := context.NewCLIContext().WithCodec(cdc)
-// 			inBuf := bufio.NewReader(cmd.InOrStdin())
-// 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-
-// 			msg := types.NewMsg<Action>(/* Action params */)
-// 			err = msg.ValidateBasic()
-// 			if err != nil {
-// 				return err
-// 			}
-
-// 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
-// 		},
-// 	}
-// }

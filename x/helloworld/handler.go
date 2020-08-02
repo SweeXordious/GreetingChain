@@ -17,7 +17,7 @@ func NewHandler(k Keeper) sdk.Handler {
 		case MsgGet:
 			return handleMsgGet(ctx, k, msg)
 		case MsgBuy:
-			return handleMsgBuy(ctx, k, msg)
+			return handleMsgPropose(ctx, k, msg)
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", ModuleName, msg)
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
@@ -69,8 +69,8 @@ func handleMsgGet(ctx sdk.Context, k Keeper, msg MsgGet) (*sdk.Result, error) {
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgBuy(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error) {
-	err := k.BuyMsg(ctx, types.Hello{
+func handleMsgPropose(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error) {
+	err := k.ProposeMsg(ctx, types.Hello{
 		Owner: msg.ValidatorAddr,
 		Msg:   msg.Hello,
 		Price: msg.Price,
@@ -85,7 +85,7 @@ func handleMsgBuy(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error) {
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr.String()),
-			sdk.NewAttribute("Msg bought: ", msg.Hello),
+			sdk.NewAttribute("Msg proposal: ", msg.Hello),
 		),
 	)
 

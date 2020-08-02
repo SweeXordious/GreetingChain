@@ -62,26 +62,25 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	return nil
 }
 
-func (k Keeper) BuyMsg(ctx sdk.Context, helloStruct types.Hello) error {
+func (k Keeper) ProposeMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	store := ctx.KVStore(k.storeKey)
-	byteKey := []byte(types.GreetingPrefix + helloStruct.Msg)
-	existentMsgBytes := store.Get(byteKey)
+	msgByteKey := []byte(types.GreetingPrefix + helloStruct.Msg)
+	existentMsgBytes := store.Get(msgByteKey)
 	if existentMsgBytes == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "The greeting you are trying to buy does not exist. Try creating it.")
 	}
-	var existentMsg types.Hello
-	codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
-	if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
-		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
-	}
-	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, existentMsg.Owner, helloStruct.Price)
-	if sdkError != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
-	}
-	//helloStruct.Msg = helloStruct.Msg + "hi"
+	//var existentMsg types.Hello
+	//codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
+	//if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
+	//	return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
+	//}
+	//sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, existentMsg.Owner, helloStruct.Price)
+	//if sdkError != nil {
+	//	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
+	//}
 	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
-	//store.Delete(byteKey)
-	store.Set(byteKey, byteVal)
+	proposalByteKey := []byte(types.ProposalPrefix + helloStruct.Msg)
+	store.Set(proposalByteKey, byteVal)
 	return nil
 }
 
@@ -90,7 +89,17 @@ func (k Keeper) delete(ctx sdk.Context, helloMsg string) {
 	store.Delete([]byte(helloMsg))
 }
 
-func (k Keeper) GetHelloIterator(ctx sdk.Context) sdk.Iterator {
+func (k Keeper) GetAllHelloIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, nil)
+}
+
+func (k Keeper) GetMsgHelloIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, []byte(types.GreetingPrefix))
+}
+
+func (k Keeper) GetProposalHelloIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, []byte(types.ProposalPrefix))
 }
