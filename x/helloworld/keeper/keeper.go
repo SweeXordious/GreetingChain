@@ -84,7 +84,7 @@ func (k Keeper) SellMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	var existentMsg types.Hello
 	codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
 
-	proposalsIterator := k.GetProposalHelloIterator(ctx)
+	proposalsIterator := k.GetProposalSpecificHelloIterator(ctx, helloStruct.Msg)
 	var bestPrice = sdk.NewInt(0)
 	var bestProposal types.Hello
 	for ; proposalsIterator.Valid(); proposalsIterator.Next() {
@@ -130,3 +130,10 @@ func (k Keeper) GetProposalHelloIterator(ctx sdk.Context) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, []byte(types.ProposalPrefix))
 }
+
+func (k Keeper) GetProposalSpecificHelloIterator(ctx sdk.Context, msg string) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, []byte(types.ProposalPrefix+msg))
+}
+
+// Add specific message proposals list
