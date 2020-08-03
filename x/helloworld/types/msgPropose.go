@@ -12,17 +12,17 @@ var _ sdk.Msg = &MsgPropose{}
 
 // MsgPropose - struct for unjailing jailed validator
 type MsgPropose struct {
-	ValidatorAddr sdk.AccAddress `json:"address" yaml:"address"` // address of the validator operator
-	Hello         string         `json:"hello" yaml:"hello"`
-	Price         sdk.Coins      `json:"price" yaml:"price"`
+	Sender sdk.AccAddress `json:"sender" yaml:"sender"` // address of the validator operator
+	Hello  string         `json:"hello" yaml:"hello"`
+	Price  sdk.Coins      `json:"price" yaml:"price"`
 }
 
 // NewMsgPropose creates a new MsgPropose instance
 func NewMsgPropose(validatorAddr sdk.AccAddress, hello string, price sdk.Coins) MsgPropose {
 	return MsgPropose{
-		ValidatorAddr: validatorAddr,
-		Hello:         hello,
-		Price:         price,
+		Sender: validatorAddr,
+		Hello:  hello,
+		Price:  price,
 	}
 }
 
@@ -32,7 +32,7 @@ const BuyConst = "Buy"
 func (msg MsgPropose) Route() string { return RouterKey }
 func (msg MsgPropose) Type() string  { return BuyConst }
 func (msg MsgPropose) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(msg.ValidatorAddr)}
+	return []sdk.AccAddress{sdk.AccAddress(msg.Sender)}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on

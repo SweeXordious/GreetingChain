@@ -26,8 +26,10 @@ var (
 	// variable aliases
 	ModuleCdc = types.ModuleCdc
 
-	NewMsgGet = types.NewMsgGet
-	NewMsgSet = types.NewMsgSet
+	NewMsgGet     = types.NewMsgGet
+	NewMsgSet     = types.NewMsgSet
+	NewMsgSell    = types.NewMsgSell
+	NewMsgPropose = types.NewMsgPropose
 )
 
 type (
@@ -35,7 +37,8 @@ type (
 	GenesisState = types.GenesisState
 	Params       = types.Params
 
-	MsgGet = types.MsgGet
-	MsgSet = types.MsgSet
-	MsgBuy = types.MsgPropose
+	MsgGet     = types.MsgGet
+	MsgSet     = types.MsgSet
+	MsgPropose = types.MsgPropose
+	MsgSell    = types.MsgSell
 )

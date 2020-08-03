@@ -2,14 +2,13 @@ package keeper
 
 import (
 	"fmt"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/libs/log"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/sweexordious/helloworld/x/helloworld/types"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 // Keeper of the helloworld store
@@ -57,7 +56,7 @@ func (k Keeper) SetMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	moduleAcct := sdk.AccAddress(crypto.AddressHash([]byte(types.ModuleName)))
 	sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, moduleAcct, helloStruct.Price)
 	if sdkError != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Random when sending money to the module.")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Problem when sending money to the module.")
 	}
 	return nil
 }
@@ -69,18 +68,46 @@ func (k Keeper) ProposeMsg(ctx sdk.Context, helloStruct types.Hello) error {
 	if existentMsgBytes == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "The greeting you are trying to buy does not exist. Try creating it.")
 	}
-	//var existentMsg types.Hello
-	//codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
-	//if existentMsg.Price.AmountOf(types.GreetingCoinDenom).GT(helloStruct.Price.AmountOf(types.GreetingCoinDenom)) {
-	//	return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, "The greeting you are trying to buy is more expensive ! Send the right amount.")
-	//}
-	//sdkError := k.CoinKeeper.SendCoins(ctx, helloStruct.Owner, existentMsg.Owner, helloStruct.Price)
-	//if sdkError != nil {
-	//	return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
-	//}
 	byteVal := k.cdc.MustMarshalBinaryBare(helloStruct)
-	proposalByteKey := []byte(types.ProposalPrefix + helloStruct.Msg)
+	proposalByteKey := []byte(types.ProposalPrefix + helloStruct.Msg + "-" + helloStruct.Owner.String())
 	store.Set(proposalByteKey, byteVal)
+	return nil
+}
+
+func (k Keeper) SellMsg(ctx sdk.Context, helloStruct types.Hello) error {
+	store := ctx.KVStore(k.storeKey)
+	msgByteKey := []byte(types.GreetingPrefix + helloStruct.Msg)
+	existentMsgBytes := store.Get(msgByteKey)
+	if existentMsgBytes == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "The greeting you are trying to sell does not exist.")
+	}
+	var existentMsg types.Hello
+	codec.Cdc.MustUnmarshalBinaryBare(existentMsgBytes, &existentMsg)
+
+	proposalsIterator := k.GetProposalHelloIterator(ctx)
+	var bestPrice = sdk.NewInt(0)
+	var bestProposal types.Hello
+	for ; proposalsIterator.Valid(); proposalsIterator.Next() {
+		var currentProposal types.Hello
+		codec.Cdc.MustUnmarshalBinaryBare(proposalsIterator.Value(), &currentProposal)
+		if currentProposal.Price.AmountOf(types.GreetingCoinDenom).GTE(bestPrice) {
+			bestPrice = currentProposal.Price.AmountOf(types.GreetingCoinDenom)
+			bestProposal = currentProposal
+		}
+	}
+	if bestPrice.Int64() == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrPanic, "No proposals exists. Try again in the future")
+	}
+
+	sdkError := k.CoinKeeper.SendCoins(ctx, bestProposal.Owner, existentMsg.Owner, bestProposal.Price)
+	if sdkError != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Problem happened when sending the money.")
+	}
+	existentMsg.Price = bestProposal.Price
+	existentMsg.Owner = bestProposal.Owner
+	byteVal := k.cdc.MustMarshalBinaryBare(existentMsg)
+	key := []byte(types.GreetingPrefix + helloStruct.Msg)
+	store.Set(key, byteVal)
 	return nil
 }
 

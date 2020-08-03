@@ -29,6 +29,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	helloworldTxCmd.AddCommand(flags.PostCommands(
 		GetCmdSetHello(cdc),
 		GetCmdProposePrice(cdc),
+		GetCmdSellMsg(cdc),
 	)...)
 
 	return helloworldTxCmd
@@ -77,6 +78,30 @@ func GetCmdProposePrice(cdc *codec.Codec) *cobra.Command {
 
 			msg := types.NewMsgPropose(cliCtx.GetFromAddress(), helloMsg, price)
 			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+}
+
+func GetCmdSellMsg(cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "sellMsg [helloMsg]",
+		Short: "Sells a message for the highest proposed price",
+		Args:  cobra.ExactArgs(1), // Does your request require arguments
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+
+			helloMsg := args[0]
+
+			msg := types.NewMsgSell(cliCtx.GetFromAddress(), helloMsg)
+			err := msg.ValidateBasic()
 			if err != nil {
 				return err
 			}

@@ -16,8 +16,10 @@ func NewHandler(k Keeper) sdk.Handler {
 			return handleMsgSet(ctx, k, msg)
 		case MsgGet:
 			return handleMsgGet(ctx, k, msg)
-		case MsgBuy:
+		case MsgPropose:
 			return handleMsgPropose(ctx, k, msg)
+		case MsgSell:
+			return handleMsgSell(ctx, k, msg)
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", ModuleName, msg)
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
@@ -31,7 +33,6 @@ func handleMsgSet(ctx sdk.Context, k Keeper, msg MsgSet) (*sdk.Result, error) {
 		Owner: msg.Sender,
 		Msg:   msg.Hello,
 		Price: msg.Price,
-		Sale:  false,
 	})
 
 	if err != nil {
@@ -69,12 +70,11 @@ func handleMsgGet(ctx sdk.Context, k Keeper, msg MsgGet) (*sdk.Result, error) {
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgPropose(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error) {
+func handleMsgPropose(ctx sdk.Context, k Keeper, msg MsgPropose) (*sdk.Result, error) {
 	err := k.ProposeMsg(ctx, types.Hello{
-		Owner: msg.ValidatorAddr,
+		Owner: msg.Sender,
 		Msg:   msg.Hello,
 		Price: msg.Price,
-		Sale:  false,
 	})
 	if err != nil {
 		fmt.Printf("could not buy hello in handleMsgGet\n%s\n", err.Error())
@@ -84,8 +84,29 @@ func handleMsgPropose(ctx sdk.Context, k Keeper, msg MsgBuy) (*sdk.Result, error
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender.String()),
 			sdk.NewAttribute("Msg proposal: ", msg.Hello),
+		),
+	)
+
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
+}
+
+func handleMsgSell(ctx sdk.Context, k Keeper, msg MsgSell) (*sdk.Result, error) {
+	err := k.SellMsg(ctx, types.Hello{
+		Owner: msg.Sender,
+		Msg:   msg.Hello,
+	})
+	if err != nil {
+		fmt.Printf("could not sell msg \n%s\n", err.Error())
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender.String()),
+			sdk.NewAttribute("Msg sell: ", msg.Hello),
 		),
 	)
 
