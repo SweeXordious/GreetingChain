@@ -60,3 +60,10 @@ To list the available greetings:
 ```ssh
     $ hellocli query helloworld list
 ```
+
+##### Some other commands:
+`hellocli tx helloworld setHello hehehehehee --from me`
+`hellocli tx helloworld proposePrice hehehehehee 120msgcoin --from me`
+`hellocli q account cosmos1zlqz0k0exf2wusfn3sfhgnfzu2xvxwct3t8w4x`
+`hellocli q helloworld list`
+`hellocli tx helloworld sellMsg hehehehehee --from me`
