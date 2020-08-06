@@ -5,7 +5,8 @@ It is an Application specific blockchain, built using the `Cosmos SDK` on top of
 This project is inspired from the [Scavenge](https://tutorials.cosmos.network/scavenge) tutorial.
 ### Features
 
-- Add your personal greeting message with your name on the ledger. Nobody can have the same greeting as you :D
+- Add your personal greeting message with your name on the ledger. 
+- Propose a price for a certain greeting. When the owner decides to sell, the proposal with the highest price is chosen.
 - List the available greetings.
 - Get the sender of a specific greeting.
 
@@ -61,9 +62,35 @@ To list the available greetings:
     $ hellocli query helloworld list
 ```
 
+##### Propose price
+To propose a price for a certain greetings: 
+```ssh
+    $ hellocli tx helloworld proposePrice <msg> <price> --from <who>
+```
+
+Example: 
+```ssh
+    $ hellocli tx helloworld proposePrice hehehehehee 120msgcoin --from me
+```
+
+##### Sell a message
+To sell a message: 
+```ssh
+    $ hellocli tx helloworld sellMsg <msg> --from <who>
+```
+
+Example: 
+```ssh
+    $ hellocli tx helloworld sellMsg hehehehehee --from me
+```
+
 ##### Some other commands:
 `hellocli tx helloworld setHello hehehehehee --from me`
+
 `hellocli tx helloworld proposePrice hehehehehee 120msgcoin --from me`
-`hellocli q account cosmos1zlqz0k0exf2wusfn3sfhgnfzu2xvxwct3t8w4x`
+
+`hellocli q account <hash>`
+
 `hellocli q helloworld list`
+
 `hellocli tx helloworld sellMsg hehehehehee --from me`
