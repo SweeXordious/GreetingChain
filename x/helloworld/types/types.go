@@ -13,7 +13,7 @@ type Hello struct {
 
 // implement fmt.Stringer
 func (h Hello) String() string {
-	return fmt.Sprintf(`Owner: %s    Msg: %s    Price: %s     For sale: %s`,
+	return fmt.Sprintf(`Owner: %s    Msg: %s    Price: %s`,
 		h.Owner,
 		h.Msg,
 		h.Price,
